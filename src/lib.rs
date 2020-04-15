@@ -22,21 +22,21 @@ fn get_separator(x: usize) -> &'static str {
 ///
 /// # Examples
 ///
-/// ```
+/// ```rust
 /// let cnpj_without_mask = "46843485000186";
 /// let cnpj_with_mask = cnpj_util::format(cnpj_without_mask);
 ///
 /// assert_eq!("46.843.485/0001-86", cnpj_with_mask);
 /// ```
 ///
-/// ```
+/// ```rust
 /// let cnpj_without_mask = "468434850001860000000000";
 /// let cnpj_with_mask = cnpj_util::format(cnpj_without_mask);
 ///
 /// assert_eq!("46.843.485/0001-86", cnpj_with_mask);
 /// ```
 ///
-/// ```
+/// ```rust
 /// let cnpj_without_mask = "46.?ABC843.485/0001-86abc";
 /// let cnpj_with_mask = cnpj_util::format(cnpj_without_mask);
 ///
@@ -103,11 +103,12 @@ fn validate(cnpj: String) -> bool {
 ///
 /// # Examples
 ///
-/// ```
-/// assert_eq!(false, is_valid("12312312312"));
-/// assert_eq!(false, is_valid("6ad0.t391.9asd47/0ad001-00"));
-/// assert_eq!(true, is_valid("13723705000189"));
-/// assert_eq!(true, is_valid("60.391.947/0001-00"));
+/// ```rust
+/// use cnpj_util as cnpj;
+/// assert_eq!(false, cnpj::is_valid("12312312312"));
+/// assert_eq!(false, cnpj::is_valid("6ad0.t391.9asd47/0ad001-00"));
+/// assert_eq!(true, cnpj::is_valid("13723705000189"));
+/// assert_eq!(true, cnpj::is_valid("60.391.947/0001-00"));
 /// ```
 pub fn is_valid(cnpj: &str) -> bool {
     if cnpj.matches(char::is_lowercase).count() > 0 
