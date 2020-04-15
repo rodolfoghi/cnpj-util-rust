@@ -68,10 +68,10 @@ pub fn reserved_numbers() -> Vec<String> {
 }
 
 pub fn is_valid(cnpj: &str) -> bool {
-
     let cnpj = cnpj.matches(char::is_numeric).collect::<Vec<_>>().concat();
     
     !reserved_numbers().contains(&cnpj)
+        && !cnpj.is_empty()
 }
 
 #[cfg(test)]
@@ -83,6 +83,11 @@ mod test_is_valid {
         for reserved_number in reserved_numbers() {
             assert_eq!(is_valid(&reserved_number), false);
         }
+    }
+
+    #[test]
+    fn should_return_false_when_is_a_empty_string() {
+        assert_eq!(is_valid(""), false);
     }
 }
 
