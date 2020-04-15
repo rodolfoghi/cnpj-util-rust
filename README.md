@@ -1,3 +1,6 @@
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/rodolfoghi/cnpj-util-rust/Rust) 
+
+
 # CNPJ util
 
 CNPJ util inspired in [brazilian-utils/cnpj](https://github.com/brazilian-utils/brazilian-utils/blob/master/src/utilities/cnpj/index.ts).
