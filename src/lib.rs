@@ -6,6 +6,8 @@
 
 use std::cmp;
 
+const CNPJ_LENGTH: usize = 14;
+
 fn get_separator(x: usize) -> &'static str {
     match x {
         2 | 5 => ".",
@@ -68,6 +70,10 @@ pub fn reserved_numbers() -> Vec<String> {
 }
 
 pub fn is_valid(cnpj: &str) -> bool {
+    if cnpj.len() != CNPJ_LENGTH {
+        return false;
+    }
+
     let cnpj = cnpj.matches(char::is_numeric).collect::<Vec<_>>().concat();
     
     !reserved_numbers().contains(&cnpj)
@@ -88,6 +94,11 @@ mod test_is_valid {
     #[test]
     fn should_return_false_when_is_a_empty_string() {
         assert_eq!(is_valid(""), false);
+    }
+
+    #[test]
+    fn should_return_false_when_dont_match_with_cnpj_length() {
+        assert_eq!(is_valid("12312312312"), false);
     }
 }
 
