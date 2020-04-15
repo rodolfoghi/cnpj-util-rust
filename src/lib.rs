@@ -5,6 +5,9 @@
 //! CNPJ (Brazil companies ID number).
 
 use std::cmp;
+use std::cmp::Ordering;
+
+const CNPJ_LENGTH: usize = 14;
 
 fn get_separator(x: usize) -> &'static str {
     match x {
@@ -52,8 +55,113 @@ pub fn format(cnpj: &str) -> String {
     cnpj_with_mask
 }
 
+pub fn reserved_numbers() -> Vec<String> {
+    vec![
+        String::from("00000000000000"),
+        String::from("11111111111111"),
+        String::from("22222222222222"),
+        String::from("33333333333333"),
+        String::from("44444444444444"),
+        String::from("55555555555555"),
+        String::from("66666666666666"),
+        String::from("77777777777777"),
+        String::from("88888888888888"),
+        String::from("99999999999999"),
+    ]
+}
+
+
+fn check_sum(cnpj: &Vec<&str>, factors: Vec<u32>) -> u32 {
+    let mut sum: u32 = 0;
+    for x in 0..factors.len() {
+        sum = sum + cnpj[x].parse::<u32>().unwrap() * factors[x];
+    }
+
+    let mod_11 = sum % 11;
+    
+    match mod_11.cmp(&2) {
+        Ordering::Less => 0,
+        _ => 11 - mod_11
+    }
+}
+
+fn validate(cnpj: String) -> bool {
+    let cnpj = cnpj.matches(char::is_numeric).collect::<Vec<_>>();
+    
+    let factors = vec![5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
+    let digito_1 = check_sum(&cnpj, factors);
+    
+    let factors = vec![6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
+    let digito_2 = check_sum(&cnpj, factors);
+
+    digito_1 == cnpj[CNPJ_LENGTH - 2].parse::<u32>().unwrap()
+        && digito_2 == cnpj[CNPJ_LENGTH - 1].parse::<u32>().unwrap()
+}
+
+pub fn is_valid(cnpj: &str) -> bool {
+    if cnpj.matches(char::is_lowercase).count() > 0 
+        || cnpj.matches(char::is_uppercase).count() > 0{
+        return false;
+    }
+    
+    let cnpj = cnpj.matches(char::is_numeric).collect::<Vec<_>>().concat();
+
+
+    cnpj.len() == CNPJ_LENGTH
+        && !reserved_numbers().contains(&cnpj)
+        && !cnpj.is_empty()
+        && validate(cnpj)
+}
+
 #[cfg(test)]
-mod tests {
+mod test_is_valid {
+    use super::*;
+
+    #[test]
+    fn should_return_false_when_it_is_on_reserved_numbers() {
+        for reserved_number in reserved_numbers() {
+            assert_eq!(is_valid(&reserved_number), false);
+        }
+    }
+
+    #[test]
+    fn should_return_false_when_is_a_empty_string() {
+        assert_eq!(is_valid(""), false);
+    }
+
+    #[test]
+    fn should_return_false_when_dont_match_with_cnpj_length() {
+        assert_eq!(is_valid("12312312312"), false);
+    }
+
+    #[test]
+    fn should_return_false_when_contains_only_letters_or_special_characters() {
+        assert_eq!(is_valid("ababcabcabcdab"), false);
+    }
+
+    #[test]
+    fn should_return_false_when_is_a_cnpj_invalid_test_numbers_with_letters() {
+        assert_eq!(is_valid("6ad0.t391.9asd47/0ad001-00"), false);
+    }
+
+    #[test]
+    fn should_return_false_when_is_a_cnpj_invalid() {
+        assert_eq!(is_valid("11257245286531"), false);
+    }
+
+    #[test]
+    fn should_return_true_when_is_a_valid_cnpj_without_mask() {
+        assert_eq!(is_valid("13723705000189"), true);
+    }
+
+    #[test]
+    fn should_return_true_when_is_a_cnpj_valid_with_mask() {
+        assert_eq!(is_valid("60.391.947/0001-00"), true);
+    }
+}
+
+#[cfg(test)]
+mod test_format {
     use super::*;
 
     #[test]
