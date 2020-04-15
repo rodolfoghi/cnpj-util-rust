@@ -52,8 +52,42 @@ pub fn format(cnpj: &str) -> String {
     cnpj_with_mask
 }
 
+pub fn reserved_numbers() -> Vec<String> {
+    vec![
+        String::from("00000000000000"),
+        String::from("11111111111111"),
+        String::from("22222222222222"),
+        String::from("33333333333333"),
+        String::from("44444444444444"),
+        String::from("55555555555555"),
+        String::from("66666666666666"),
+        String::from("77777777777777"),
+        String::from("88888888888888"),
+        String::from("99999999999999"),
+    ]
+}
+
+pub fn is_valid(cnpj: &str) -> bool {
+
+    let cnpj = cnpj.matches(char::is_numeric).collect::<Vec<_>>().concat();
+    
+    !reserved_numbers().contains(&cnpj)
+}
+
 #[cfg(test)]
-mod tests {
+mod test_is_valid {
+    use super::*;
+
+    #[test]
+    fn should_return_false_when_it_is_on_reserved_numbers() {
+        for reserved_number in reserved_numbers() {
+            assert_eq!(is_valid(&reserved_number), false);
+        }
+    }
+}
+
+#[cfg(test)]
+mod test_format {
     use super::*;
 
     #[test]
