@@ -98,6 +98,17 @@ fn validate(cnpj: String) -> bool {
         && digito_2 == cnpj[CNPJ_LENGTH - 1].parse::<u32>().unwrap()
 }
 
+
+/// Check if CNPJ is valid.
+///
+/// # Examples
+///
+/// ```
+/// assert_eq!(false, is_valid("12312312312"));
+/// assert_eq!(false, is_valid("6ad0.t391.9asd47/0ad001-00"));
+/// assert_eq!(true, is_valid("13723705000189"));
+/// assert_eq!(true, is_valid("60.391.947/0001-00"));
+/// ```
 pub fn is_valid(cnpj: &str) -> bool {
     if cnpj.matches(char::is_lowercase).count() > 0 
         || cnpj.matches(char::is_uppercase).count() > 0{
