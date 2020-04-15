@@ -9,6 +9,30 @@ fn get_separator(x: usize) -> &'static str {
     }
 }
 
+/// Format string with CNPJ mask.
+///
+/// # Examples
+///
+/// ```
+/// let cnpj_without_mask = "46843485000186";
+/// let cnpj_with_mask = cnpj_util::format(cnpj_without_mask);
+///
+/// assert_eq!("46.843.485/0001-86", cnpj_with_mask);
+/// ```
+///
+/// ```
+/// let cnpj_without_mask = "468434850001860000000000";
+/// let cnpj_with_mask = cnpj_util::format(cnpj_without_mask);
+///
+/// assert_eq!("46.843.485/0001-86", cnpj_with_mask);
+/// ```
+///
+/// ```
+/// let cnpj_without_mask = "46.?ABC843.485/0001-86abc";
+/// let cnpj_with_mask = cnpj_util::format(cnpj_without_mask);
+///
+/// assert_eq!("46.843.485/0001-86", cnpj_with_mask);
+/// ```
 pub fn format(cnpj: &str) -> String {
     let cnpj = cnpj.matches(char::is_numeric).collect::<Vec<_>>();
 
