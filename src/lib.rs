@@ -145,6 +145,11 @@ mod test_is_valid {
     fn should_return_false_when_is_a_cnpj_invalid() {
         assert_eq!(is_valid("11257245286531"), false);
     }
+
+    #[test]
+    fn should_return_true_when_is_a_valid_cnpj_without_mask() {
+        assert_eq!(is_valid("13723705000189"), true);
+    }
 }
 
 #[cfg(test)]
