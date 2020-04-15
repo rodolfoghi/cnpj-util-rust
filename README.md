@@ -1,4 +1,4 @@
-![GitHub Workflow Status](https://img.shields.io/github/workflow/status/rodolfoghi/cnpj-util-rust/Rust) 
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/rodolfoghi/cnpj-util-rust/Rust) ![Crates.io](https://img.shields.io/crates/v/cnpj-util) ![Crates.io](https://img.shields.io/crates/d/cnpj-util)
 
 
 # CNPJ util
