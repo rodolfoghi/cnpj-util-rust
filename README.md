@@ -1,4 +1,4 @@
-![GitHub Workflow Status](https://img.shields.io/github/workflow/status/rodolfoghi/cnpj-util-rust/Rust) ![Crates.io](https://img.shields.io/crates/v/cnpj-util) ![Crates.io](https://img.shields.io/crates/d/cnpj-util)
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/rodolfoghi/cnpj-util-rust/Rust) ![Crates.io](https://img.shields.io/crates/v/cnpj-util) ![Crates.io](https://img.shields.io/crates/d/cnpj-util) ![GitHub issues](https://img.shields.io/github/issues/rodolfoghi/cnpj-util-rust)
 
 
 # CNPJ util
