@@ -100,6 +100,11 @@ mod test_is_valid {
     fn should_return_false_when_dont_match_with_cnpj_length() {
         assert_eq!(is_valid("12312312312"), false);
     }
+
+    #[test]
+    fn should_return_false_when_contains_only_letters_or_special_characters() {
+        assert_eq!(is_valid("ababcabcabcdab"), false);
+    }
 }
 
 #[cfg(test)]
