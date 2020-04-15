@@ -99,13 +99,16 @@ fn validate(cnpj: String) -> bool {
 }
 
 pub fn is_valid(cnpj: &str) -> bool {
-    if cnpj.len() != CNPJ_LENGTH {
+    if cnpj.matches(char::is_lowercase).count() > 0 
+        || cnpj.matches(char::is_uppercase).count() > 0{
         return false;
     }
-
-    let cnpj = cnpj.matches(char::is_numeric).collect::<Vec<_>>().concat();
     
-    !reserved_numbers().contains(&cnpj)
+    let cnpj = cnpj.matches(char::is_numeric).collect::<Vec<_>>().concat();
+
+
+    cnpj.len() == CNPJ_LENGTH
+        && !reserved_numbers().contains(&cnpj)
         && !cnpj.is_empty()
         && validate(cnpj)
 }
@@ -149,6 +152,11 @@ mod test_is_valid {
     #[test]
     fn should_return_true_when_is_a_valid_cnpj_without_mask() {
         assert_eq!(is_valid("13723705000189"), true);
+    }
+
+    #[test]
+    fn should_return_true_when_is_a_cnpj_valid_with_mask() {
+        assert_eq!(is_valid("60.391.947/0001-00"), true);
     }
 }
 
