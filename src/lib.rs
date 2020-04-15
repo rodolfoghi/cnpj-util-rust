@@ -5,6 +5,7 @@
 //! CNPJ (Brazil companies ID number).
 
 use std::cmp;
+use std::cmp::Ordering;
 
 const CNPJ_LENGTH: usize = 14;
 
@@ -69,6 +70,34 @@ pub fn reserved_numbers() -> Vec<String> {
     ]
 }
 
+
+fn check_sum(cnpj: &Vec<&str>, factors: Vec<u32>) -> u32 {
+    let mut sum: u32 = 0;
+    for x in 0..factors.len() {
+        sum = sum + cnpj[x].parse::<u32>().unwrap() * factors[x];
+    }
+
+    let mod_11 = sum % 11;
+    
+    match mod_11.cmp(&2) {
+        Ordering::Less => 0,
+        _ => 11 - mod_11
+    }
+}
+
+fn validate(cnpj: String) -> bool {
+    let cnpj = cnpj.matches(char::is_numeric).collect::<Vec<_>>();
+    
+    let factors = vec![5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
+    let digito_1 = check_sum(&cnpj, factors);
+    
+    let factors = vec![6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
+    let digito_2 = check_sum(&cnpj, factors);
+
+    digito_1 == cnpj[CNPJ_LENGTH - 2].parse::<u32>().unwrap()
+        && digito_2 == cnpj[CNPJ_LENGTH - 1].parse::<u32>().unwrap()
+}
+
 pub fn is_valid(cnpj: &str) -> bool {
     if cnpj.len() != CNPJ_LENGTH {
         return false;
@@ -78,6 +107,7 @@ pub fn is_valid(cnpj: &str) -> bool {
     
     !reserved_numbers().contains(&cnpj)
         && !cnpj.is_empty()
+        && validate(cnpj)
 }
 
 #[cfg(test)]
@@ -104,6 +134,16 @@ mod test_is_valid {
     #[test]
     fn should_return_false_when_contains_only_letters_or_special_characters() {
         assert_eq!(is_valid("ababcabcabcdab"), false);
+    }
+
+    #[test]
+    fn should_return_false_when_is_a_cnpj_invalid_test_numbers_with_letters() {
+        assert_eq!(is_valid("6ad0.t391.9asd47/0ad001-00"), false);
+    }
+
+    #[test]
+    fn should_return_false_when_is_a_cnpj_invalid() {
+        assert_eq!(is_valid("11257245286531"), false);
     }
 }
 
