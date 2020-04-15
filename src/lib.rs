@@ -1,3 +1,9 @@
+//! # CNPJ util
+//!
+//! `cnpj util` is a library focused on solving a common problems
+//! that we face daily in the development of applications using 
+//! CNPJ (Brazil companies ID number).
+
 use std::cmp;
 
 fn get_separator(x: usize) -> &'static str {
