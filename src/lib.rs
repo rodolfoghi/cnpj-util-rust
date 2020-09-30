@@ -1,7 +1,7 @@
 //! # CNPJ util
 //!
 //! `cnpj util` is a library focused on solving a common problems
-//! that we face daily in the development of applications using 
+//! that we face daily in the development of applications using
 //! CNPJ (Brazil companies ID number).
 
 use std::cmp;
@@ -14,7 +14,7 @@ fn get_separator(x: usize) -> &'static str {
         2 | 5 => ".",
         8 => "/",
         12 => "-",
-        _ => ""
+        _ => "",
     }
 }
 
@@ -70,7 +70,6 @@ pub fn reserved_numbers() -> Vec<String> {
     ]
 }
 
-
 fn check_sum(cnpj: &Vec<&str>, factors: Vec<u32>) -> u32 {
     let mut sum: u32 = 0;
     for x in 0..factors.len() {
@@ -78,26 +77,25 @@ fn check_sum(cnpj: &Vec<&str>, factors: Vec<u32>) -> u32 {
     }
 
     let mod_11 = sum % 11;
-    
+
     match mod_11.cmp(&2) {
         Ordering::Less => 0,
-        _ => 11 - mod_11
+        _ => 11 - mod_11,
     }
 }
 
 fn validate(cnpj: String) -> bool {
     let cnpj = cnpj.matches(char::is_numeric).collect::<Vec<_>>();
-    
+
     let factors = vec![5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
     let digito_1 = check_sum(&cnpj, factors);
-    
+
     let factors = vec![6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
     let digito_2 = check_sum(&cnpj, factors);
 
     digito_1 == cnpj[CNPJ_LENGTH - 2].parse::<u32>().unwrap()
         && digito_2 == cnpj[CNPJ_LENGTH - 1].parse::<u32>().unwrap()
 }
-
 
 /// Check if CNPJ is valid.
 ///
@@ -111,13 +109,12 @@ fn validate(cnpj: String) -> bool {
 /// assert_eq!(true, cnpj::is_valid("60.391.947/0001-00"));
 /// ```
 pub fn is_valid(cnpj: &str) -> bool {
-    if cnpj.matches(char::is_lowercase).count() > 0 
-        || cnpj.matches(char::is_uppercase).count() > 0{
+    if cnpj.matches(char::is_lowercase).count() > 0 || cnpj.matches(char::is_uppercase).count() > 0
+    {
         return false;
     }
-    
-    let cnpj = cnpj.matches(char::is_numeric).collect::<Vec<_>>().concat();
 
+    let cnpj = cnpj.matches(char::is_numeric).collect::<Vec<_>>().concat();
 
     cnpj.len() == CNPJ_LENGTH
         && !reserved_numbers().contains(&cnpj)
