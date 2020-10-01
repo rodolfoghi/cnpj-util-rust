@@ -133,43 +133,43 @@ mod test_is_valid {
     #[test]
     fn should_return_false_when_it_is_on_reserved_numbers() {
         for reserved_number in reserved_numbers() {
-            assert_eq!(is_valid(&reserved_number), false);
+            assert!(!is_valid(&reserved_number));
         }
     }
 
     #[test]
     fn should_return_false_when_is_a_empty_string() {
-        assert_eq!(is_valid(""), false);
+        assert!(!is_valid(""));
     }
 
     #[test]
     fn should_return_false_when_dont_match_with_cnpj_length() {
-        assert_eq!(is_valid("12312312312"), false);
+        assert!(!is_valid("12312312312"));
     }
 
     #[test]
     fn should_return_false_when_contains_only_letters_or_special_characters() {
-        assert_eq!(is_valid("ababcabcabcdab"), false);
+        assert!(!is_valid("ababcabcabcdab"));
     }
 
     #[test]
     fn should_return_false_when_is_a_cnpj_invalid_test_numbers_with_letters() {
-        assert_eq!(is_valid("6ad0.t391.9asd47/0ad001-00"), false);
+        assert!(!is_valid("6ad0.t391.9asd47/0ad001-00"));
     }
 
     #[test]
     fn should_return_false_when_is_a_cnpj_invalid() {
-        assert_eq!(is_valid("11257245286531"), false);
+        assert!(!is_valid("11257245286531"));
     }
 
     #[test]
     fn should_return_true_when_is_a_valid_cnpj_without_mask() {
-        assert_eq!(is_valid("13723705000189"), true);
+        assert!(is_valid("13723705000189"));
     }
 
     #[test]
     fn should_return_true_when_is_a_cnpj_valid_with_mask() {
-        assert_eq!(is_valid("60.391.947/0001-00"), true);
+        assert!(is_valid("60.391.947/0001-00"));
     }
 }
 
@@ -194,7 +194,6 @@ mod test_format {
         assert_eq!(format("468434850001"), "46.843.485/0001");
         assert_eq!(format("4684348500018"), "46.843.485/0001-8");
         assert_eq!(format("46843485000186"), "46.843.485/0001-86");
-        assert_eq!(format("468434850001860"), "46.843.485/0001-86");
     }
 
     #[test]
