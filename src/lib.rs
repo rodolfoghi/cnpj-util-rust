@@ -47,9 +47,13 @@ pub fn format(cnpj: &str) -> String {
 
     let mut cnpj_with_mask: String = String::from("");
 
-    for x in 0..cmp::min(cnpj.len(), 14) {
-        cnpj_with_mask.push_str(get_separator(x));
-        cnpj_with_mask.push_str(cnpj[x]);
+    for (i, n) in cnpj
+        .iter()
+        .enumerate()
+        .take(cmp::min(cnpj.len(), CNPJ_LENGTH))
+    {
+        cnpj_with_mask.push_str(get_separator(i));
+        cnpj_with_mask.push_str(n);
     }
 
     cnpj_with_mask
@@ -190,6 +194,7 @@ mod test_format {
         assert_eq!(format("468434850001"), "46.843.485/0001");
         assert_eq!(format("4684348500018"), "46.843.485/0001-8");
         assert_eq!(format("46843485000186"), "46.843.485/0001-86");
+        assert_eq!(format("468434850001860"), "46.843.485/0001-86");
     }
 
     #[test]
