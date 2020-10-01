@@ -1,7 +1,7 @@
 //! # CNPJ util
 //!
 //! `cnpj util` is a library focused on solving a common problems
-//! that we face daily in the development of applications using 
+//! that we face daily in the development of applications using
 //! CNPJ (Brazil companies ID number).
 
 use std::cmp;
@@ -14,7 +14,7 @@ fn get_separator(x: usize) -> &'static str {
         2 | 5 => ".",
         8 => "/",
         12 => "-",
-        _ => ""
+        _ => "",
     }
 }
 
@@ -47,9 +47,13 @@ pub fn format(cnpj: &str) -> String {
 
     let mut cnpj_with_mask: String = String::from("");
 
-    for x in 0..cmp::min(cnpj.len(), 14) {
-        cnpj_with_mask.push_str(get_separator(x));
-        cnpj_with_mask.push_str(cnpj[x]);
+    for (i, n) in cnpj
+        .iter()
+        .enumerate()
+        .take(cmp::min(cnpj.len(), CNPJ_LENGTH))
+    {
+        cnpj_with_mask.push_str(get_separator(i));
+        cnpj_with_mask.push_str(n);
     }
 
     cnpj_with_mask
@@ -70,34 +74,32 @@ pub fn reserved_numbers() -> Vec<String> {
     ]
 }
 
-
-fn check_sum(cnpj: &Vec<&str>, factors: Vec<u32>) -> u32 {
+fn check_sum(cnpj: &[&str], factors: Vec<u32>) -> u32 {
     let mut sum: u32 = 0;
     for x in 0..factors.len() {
-        sum = sum + cnpj[x].parse::<u32>().unwrap() * factors[x];
+        sum += cnpj[x].parse::<u32>().unwrap() * factors[x];
     }
 
     let mod_11 = sum % 11;
-    
+
     match mod_11.cmp(&2) {
         Ordering::Less => 0,
-        _ => 11 - mod_11
+        _ => 11 - mod_11,
     }
 }
 
 fn validate(cnpj: String) -> bool {
     let cnpj = cnpj.matches(char::is_numeric).collect::<Vec<_>>();
-    
+
     let factors = vec![5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
     let digito_1 = check_sum(&cnpj, factors);
-    
+
     let factors = vec![6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
     let digito_2 = check_sum(&cnpj, factors);
 
     digito_1 == cnpj[CNPJ_LENGTH - 2].parse::<u32>().unwrap()
         && digito_2 == cnpj[CNPJ_LENGTH - 1].parse::<u32>().unwrap()
 }
-
 
 /// Check if CNPJ is valid.
 ///
@@ -111,13 +113,12 @@ fn validate(cnpj: String) -> bool {
 /// assert_eq!(true, cnpj::is_valid("60.391.947/0001-00"));
 /// ```
 pub fn is_valid(cnpj: &str) -> bool {
-    if cnpj.matches(char::is_lowercase).count() > 0 
-        || cnpj.matches(char::is_uppercase).count() > 0{
+    if cnpj.matches(char::is_lowercase).count() > 0 || cnpj.matches(char::is_uppercase).count() > 0
+    {
         return false;
     }
-    
-    let cnpj = cnpj.matches(char::is_numeric).collect::<Vec<_>>().concat();
 
+    let cnpj = cnpj.matches(char::is_numeric).collect::<Vec<_>>().concat();
 
     cnpj.len() == CNPJ_LENGTH
         && !reserved_numbers().contains(&cnpj)
@@ -132,43 +133,43 @@ mod test_is_valid {
     #[test]
     fn should_return_false_when_it_is_on_reserved_numbers() {
         for reserved_number in reserved_numbers() {
-            assert_eq!(is_valid(&reserved_number), false);
+            assert!(!is_valid(&reserved_number));
         }
     }
 
     #[test]
     fn should_return_false_when_is_a_empty_string() {
-        assert_eq!(is_valid(""), false);
+        assert!(!is_valid(""));
     }
 
     #[test]
     fn should_return_false_when_dont_match_with_cnpj_length() {
-        assert_eq!(is_valid("12312312312"), false);
+        assert!(!is_valid("12312312312"));
     }
 
     #[test]
     fn should_return_false_when_contains_only_letters_or_special_characters() {
-        assert_eq!(is_valid("ababcabcabcdab"), false);
+        assert!(!is_valid("ababcabcabcdab"));
     }
 
     #[test]
     fn should_return_false_when_is_a_cnpj_invalid_test_numbers_with_letters() {
-        assert_eq!(is_valid("6ad0.t391.9asd47/0ad001-00"), false);
+        assert!(!is_valid("6ad0.t391.9asd47/0ad001-00"));
     }
 
     #[test]
     fn should_return_false_when_is_a_cnpj_invalid() {
-        assert_eq!(is_valid("11257245286531"), false);
+        assert!(!is_valid("11257245286531"));
     }
 
     #[test]
     fn should_return_true_when_is_a_valid_cnpj_without_mask() {
-        assert_eq!(is_valid("13723705000189"), true);
+        assert!(is_valid("13723705000189"));
     }
 
     #[test]
     fn should_return_true_when_is_a_cnpj_valid_with_mask() {
-        assert_eq!(is_valid("60.391.947/0001-00"), true);
+        assert!(is_valid("60.391.947/0001-00"));
     }
 }
 
