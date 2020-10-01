@@ -74,7 +74,7 @@ pub fn reserved_numbers() -> Vec<String> {
     ]
 }
 
-fn check_sum(cnpj: &Vec<&str>, factors: Vec<u32>) -> u32 {
+fn check_sum(cnpj: &[&str], factors: Vec<u32>) -> u32 {
     let mut sum: u32 = 0;
     for x in 0..factors.len() {
         sum += cnpj[x].parse::<u32>().unwrap() * factors[x];
